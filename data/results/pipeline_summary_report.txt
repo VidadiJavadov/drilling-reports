@@ -1,0 +1,23 @@
+=================================================
+      O&G DAILY REPORTS NLP ANALYSIS SUMMARY     
+=================================================
+
+Total PDF Reports Analyzed : 995
+Total Operations Processed : 11226
+
+--- ACTIVITY DISTRIBUTION ---
+- OTHER: 5499 operations (49.0%)
+- TRIPPING: 2009 operations (17.9%)
+- CIRCULATION: 1250 operations (11.1%)
+- CEMENTING: 805 operations (7.2%)
+- PRESSURE_TEST: 672 operations (6.0%)
+- MAINTENANCE_REPAIR: 521 operations (4.6%)
+- DRILLING: 400 operations (3.6%)
+- FISHING: 70 operations (0.6%)
+
+--- PIPELINE ARCHITECTURE ---
+1. Data Extraction -> Operations Tables
+2. NER -> Depths, Measurements, Equipment
+3. Hybrid Classification -> Rule-based + Sentence-BERT zero-shot
+4. Semantic Matching -> Matching NDS events to reports (Done in Task 2)
+5. TF-IDF -> Keywords generation
