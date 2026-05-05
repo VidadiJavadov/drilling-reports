@@ -176,6 +176,52 @@ def keyword_boost_score(query_expanded: str,
     return scores
 
 
+
+
+# -----------------------------------------------------------------------------
+# Signal 4: Numeric value overlap boost
+# -----------------------------------------------------------------------------
+def extract_numbers(text: str) -> set[str]:
+    """
+    Extract all numeric values from text, normalising comma-decimals to dots.
+    "0,16" and "0.16" are treated as the same number.
+    This handles European decimal notation common in Norwegian drilling reports.
+    """
+    text_norm = re.sub(r'(\d),(\d)', r'\1.\2', text)
+    return set(re.findall(r'\b\d+(?:\.\d+)?\b', text_norm))
+
+
+def numeric_overlap_score(query: str,
+                          remarks_expanded: list[str]) -> np.ndarray:
+    """
+    For each remark, compute a score based on how many of the query's numeric
+    values appear in the remark.
+
+    Weighted by digit-length so that specific values like "0.16" (rare, precise)
+    contribute more than coarse values like "2" (common, ambiguous).
+
+    Example:
+      event   = "Reduced inclination to 0.16 deg"  → query_nums = {"0.16"}
+      correct = "...reduced inclination to 0,16 deg" → overlap = {"0.16"} → score 1.0
+      wrong   = "...Inc 85,4 dgr..."                → overlap = {}        → score 0.0
+    """
+    query_nums = extract_numbers(query)
+    scores = np.zeros(len(remarks_expanded))
+
+    if not query_nums:
+        return scores
+
+    total_weight = sum(len(n) for n in query_nums)
+    if total_weight == 0:
+        return scores
+
+    for i, remark in enumerate(remarks_expanded):
+        remark_nums = extract_numbers(remark)
+        overlap = query_nums & remark_nums
+        scores[i] = sum(len(n) for n in overlap) / total_weight
+
+    return scores
+
 # -----------------------------------------------------------------------------
 # BM25
 # -----------------------------------------------------------------------------
@@ -337,9 +383,10 @@ def match_nds_events(
     db_path: str           = "../../data/processed/document_database.sqlite",
     nds_path: str          = "../../data/raw/nds_events.xlsx",
     results_dir: str       = "../../data/results",
-    semantic_weight: float = 0.55,
-    bm25_weight: float     = 0.30,
-    keyword_weight: float  = 0.15,
+    semantic_weight: float = 0.50,   # reduced slightly to make room for numeric signal
+    bm25_weight: float     = 0.28,
+    keyword_weight: float  = 0.14,
+    numeric_weight: float  = 0.08,   # Signal 4: exact numeric value overlap
     min_remark_tokens: int = 8,
     top_k: int             = 3,
 ):
@@ -436,12 +483,18 @@ def match_nds_events(
         bm25_scores = bm25.score(event_expanded)
 
         # Signal 3: Keyword boost
-        kw_scores   = keyword_boost_score(event_expanded, remarks_exp_filt)
+        kw_scores  = keyword_boost_score(event_expanded, remarks_exp_filt)
 
-        # Ensemble
+        # Signal 4: Numeric value overlap
+        # Normalise comma-decimals in event text before comparison
+        event_for_nums = re.sub(r'(\d),(\d)', r'\1.\2', event_expanded)
+        num_scores = numeric_overlap_score(event_for_nums, remarks_exp_filt)
+
+        # Ensemble (weights sum to 1.0)
         ensemble = (semantic_weight * normalise(cos_scores)
                     + bm25_weight   * normalise(bm25_scores)
-                    + keyword_weight * normalise(kw_scores))
+                    + keyword_weight * normalise(kw_scores)
+                    + numeric_weight * normalise(num_scores))
 
         # Top-k with deduplication
         ranked_idx   = np.argsort(ensemble)[::-1]
@@ -460,7 +513,8 @@ def match_nds_events(
               f"  | Ensemble: {ensemble[best_idx]:.4f}"
               f"  (SBERT: {cos_scores[best_idx]:.4f}"
               f", BM25: {bm25_scores[best_idx]:.4f}"
-              f", KW: {kw_scores[best_idx]:.4f})")
+              f", KW: {kw_scores[best_idx]:.4f}"
+              f", NUM: {num_scores[best_idx]:.4f})")
         print(f"  Remark: {remarks_ori_filt[best_idx][:120]}...")
 
         best_results.append({
@@ -471,6 +525,7 @@ def match_nds_events(
             'Semantic_Score': round(float(cos_scores[best_idx]),  4),
             'BM25_Score':     round(float(bm25_scores[best_idx]), 4),
             'Keyword_Score':  round(float(kw_scores[best_idx]),   4),
+            'Numeric_Score':  round(float(num_scores[best_idx]),  4),
             'Matched_Remark': remarks_ori_filt[best_idx],
         })
 
@@ -484,6 +539,7 @@ def match_nds_events(
                 'Semantic_Score': round(float(cos_scores[k_idx]),  4),
                 'BM25_Score':     round(float(bm25_scores[k_idx]), 4),
                 'Keyword_Score':  round(float(kw_scores[k_idx]),   4),
+                'Numeric_Score':  round(float(num_scores[k_idx]),  4),
                 'Matched_Remark': remarks_ori_filt[k_idx],
             })
 
@@ -506,11 +562,10 @@ def match_nds_events(
     print("\n--- FINAL RESULTS ---")
     print(df_best[['Well', 'Matched_File', 'Ensemble_Score',
                    'Semantic_Score', 'BM25_Score', 'Keyword_Score',
-                   'Matched_Remark']])
+                   'Numeric_Score', 'Matched_Remark']])
 
     return df_best, df_top_k
 
 
 if __name__ == "__main__":
     match_nds_events()
-    
