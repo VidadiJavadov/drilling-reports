@@ -1,0 +1,484 @@
+[
+  {
+    "Metadata": {
+      "Wellbore ID": "15/9-19",
+      "Report number": "1",
+      "Period": "1979-12-31 00:00 - 1980-01-01 00:00",
+      "Status": "normal",
+      "Operator": null,
+      "Rig Name": null,
+      "Drilling Contractor": null,
+      "Spud Date": "1997-07-25 00:00",
+      "Water depth MSL (m)": "84",
+      "Elevation RKB-MSL (m)": null,
+      "Current Depth mMD": null,
+      "Current Depth mTVD": null,
+      "Kick Off Depth mMD": "2178",
+      "Kick Off Depth mTVD": "13",
+      "Last Casing Depth mMD": null,
+      "Plug Back Depth mMD": null,
+      "Tight well": "Y",
+      "HPHT": "Y",
+      "Hole Diameter (in)": null,
+      "Formation Strength (g/cm3)": null,
+      "Pressure Test Type": null
+    },
+    "Summaries": {
+      "Summary of activities": "",
+      "Summary of planned activities": null
+    },
+    "Tables": {
+      "Operations Table": [],
+      "Drilling Fluid Table": [],
+      "Equipment Failure Table": [],
+      "Other Tables": []
+    },
+    "filename": "15_9_19_A_1980_01_01.pdf"
+  },
+  {
+    "Metadata": {
+      "Wellbore ID": "15/9-19",
+      "Report number": "1",
+      "Period": "1997-07-24 00:00 - 1997-07-25 00:00",
+      "Status": "normal",
+      "Operator": null,
+      "Rig Name": null,
+      "Drilling Contractor": null,
+      "Spud Date": "1997-07-25 00:00",
+      "Water depth MSL (m)": "84",
+      "Elevation RKB-MSL (m)": "25",
+      "Current Depth mMD": "2203",
+      "Current Depth mTVD": null,
+      "Kick Off Depth mMD": "2178",
+      "Kick Off Depth mTVD": null,
+      "Last Casing Depth mMD": "4643",
+      "Plug Back Depth mMD": "2203",
+      "Tight well": "Y",
+      "HPHT": "Y",
+      "Hole Diameter (in)": null,
+      "Formation Strength (g/cm3)": null,
+      "Pressure Test Type": null
+    },
+    "Summaries": {
+      "Summary of activities": "",
+      "Summary of planned activities": null
+    },
+    "Tables": {
+      "Operations Table": [],
+      "Drilling Fluid Table": [],
+      "Equipment Failure Table": [],
+      "Other Tables": []
+    },
+    "filename": "15_9_19_A_1997_07_25.pdf"
+  },
+  {
+    "Metadata": {
+      "Wellbore ID": "15/9-19",
+      "Report number": "2",
+      "Period": "1997-07-25 00:00 - 1997-07-26 00:00",
+      "Status": "normal",
+      "Operator": null,
+      "Rig Name": null,
+      "Drilling Contractor": null,
+      "Spud Date": "1997-07-25 00:00",
+      "Water depth MSL (m)": "84",
+      "Elevation RKB-MSL (m)": "25",
+      "Current Depth mMD": "2213",
+      "Current Depth mTVD": "1645",
+      "Kick Off Depth mMD": "2178",
+      "Kick Off Depth mTVD": null,
+      "Last Casing Depth mMD": "4643",
+      "Plug Back Depth mMD": null,
+      "Tight well": "Y",
+      "HPHT": "Y",
+      "Hole Diameter (in)": "8.5",
+      "Formation Strength (g/cm3)": "1.73",
+      "Pressure Test Type": null
+    },
+    "Summaries": {
+      "Summary of activities": "Pore Pressure Time Depth mMD Depth TVD Equ Mud Weight (g/cm3) Reading 00:00 2213 1.03 estimated Lithology Information Start Depth mMD End Depth mMD Start Depth TVD End Depth TVD Shows Description Lithology Description 2206 -999.99 CLAYSTONES - HORDALAND GROUP Gas Reading Information Time Class Depth to Top Depth to Bottom Depth to Top Depth to Bottom Highest Gas Lowest Gas C1 C2 C3 IC4 IC5 mMD MD mTVD TVD (%) () (ppm) (ppm) (ppm) (ppm) (ppm) 00:00 drilling gas pea 2213 1644 .1 800 10 -999.99 -999.99 -999.99 k",
+      "Summary of planned activities": "Pore Pressure Time Depth mMD Depth TVD Equ Mud Weight (g/cm3) Reading 00:00 2213 1.03 estimated Lithology Information Start Depth mMD End Depth mMD Start Depth TVD End Depth TVD Shows Description Lithology Description 2206 -999.99 CLAYSTONES - HORDALAND GROUP Gas Reading Information Time Class Depth to Top Depth to Bottom Depth to Top Depth to Bottom Highest Gas Lowest Gas C1 C2 C3 IC4 IC5 mMD MD mTVD TVD (%) () (ppm) (ppm) (ppm) (ppm) (ppm) 00:00 drilling gas pea 2213 1644 .1 800 10 -999.99 -999.99 -999.99 k"
+    },
+    "Tables": {
+      "Operations Table": [
+        {
+          "Start time": "00:30",
+          "End time": "06:00",
+          "End Depth mMD": "500",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "MU BAKER WINDOWMASTER WHIPSTOCK + MILLING ASSEMBLY & ASSOCIATED BHA. CONTINUE TIH WITH DP."
+        },
+        {
+          "Start time": "06:00",
+          "End time": "10:00",
+          "End Depth mMD": "21",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "CONTINUED TIH WITH WINDOWMASTER WHIPSTOCK & MILLING ASSEMBLY. TAGGED 9 5/8\" BRIDGE-PLUG AT 21 M DPM."
+        },
+        {
+          "Start time": "10:00",
+          "End time": "12:00",
+          "End Depth mMD": "21",
+          "Main -- Sub Activity": "drilling -- drill",
+          "State": "ok",
+          "Remark": "ORIENTED WHIPSTOCK USING MWD. SET ANCHOR ON WHIPSTOCK."
+        },
+        {
+          "Start time": "12:00",
+          "End time": "18:00",
+          "End Depth mMD": "2207",
+          "Main -- Sub Activity": "drilling -- drill",
+          "State": "ok",
+          "Remark": "CUT WINDOW IN 9 5/8\" CASING USING WHIPSTOCK. TOP OF WINDOW = 2202 M MD - BOTTOM OF WINDOW = 2207 M MD. PUMPED 5 M3 HI-VIS PILL WHILE MILLING AT 2205 M."
+        },
+        {
+          "Start time": "18:00",
+          "End time": "21:00",
+          "End Depth mMD": "2213",
+          "Main -- Sub Activity": "drilling -- drill",
+          "State": "ok",
+          "Remark": "DRILLED/MILLED NEW FORMATION FROM 2207 - 2213 M. PUMPED 5 M3 HI-VIS PILL WHILE DRILLING AT 2208 M."
+        },
+        {
+          "Start time": "21:00",
+          "End time": "23:00",
+          "End Depth mMD": "2213",
+          "Main -- Sub Activity": "drilling -- drill",
+          "State": "ok",
+          "Remark": "REAMED WINDOW. AFTER APPROXIMATELY 20 TIMES, STILL UNABLE TO GO DOWN THROUGH WINDOW WITHOUT ROTATING - BASED ON USING MAXIMUM OF 12 M T WEIGHT. REAMED 5 ADDITIONAL TIMES - NOW ABLE TO SLACK-OFF & PICK-UP THROUGH WINDOW WITHOUT HAVING TO ROTATE STRING."
+        },
+        {
+          "Start time": "23:00",
+          "End time": "00:00",
+          "End Depth mMD": "2196",
+          "Main -- Sub Activity": "drilling -- circulat ing conditioning",
+          "State": "ok",
+          "Remark": "PUMPED 10 M3 HI-VIS PILL & CIRCULATED HOLE CLEAN AT 2000 LPM."
+        }
+      ],
+      "Drilling Fluid Table": [],
+      "Equipment Failure Table": [],
+      "Other Tables": [
+        {
+          "Time": "00:00",
+          "Depth mMD": "2213",
+          "Depth TVD": "",
+          "Equ Mud Weight (g/cm3)": "1.03",
+          "Reading": "estimated"
+        },
+        {
+          "Time": "00:00",
+          "Class": "drilling gas pea k",
+          "Depth to Top mMD": "2213",
+          "Depth to Bottom MD": "",
+          "Depth to Top mTVD": "1644",
+          "Depth to Bottom TVD": "",
+          "Highest Gas (%)": ".1",
+          "Lowest Gas ()": "",
+          "C1 (ppm)": "800",
+          "C2 (ppm)": "10",
+          "C3 (ppm)": "-999.99",
+          "IC4 (ppm)": "-999.99",
+          "IC5 (ppm)": "-999.99"
+        }
+      ]
+    },
+    "filename": "15_9_19_A_1997_07_26.pdf"
+  },
+  {
+    "Metadata": {
+      "Wellbore ID": "15/9-19",
+      "Report number": "3",
+      "Period": "1997-07-26 00:00 - 1997-07-27 00:00",
+      "Status": "normal",
+      "Operator": null,
+      "Rig Name": null,
+      "Drilling Contractor": null,
+      "Spud Date": "1997-07-25 00:00",
+      "Water depth MSL (m)": "84",
+      "Elevation RKB-MSL (m)": "25",
+      "Current Depth mMD": "2213",
+      "Current Depth mTVD": "1645",
+      "Kick Off Depth mMD": "2178",
+      "Kick Off Depth mTVD": null,
+      "Last Casing Depth mMD": "4643",
+      "Plug Back Depth mMD": null,
+      "Tight well": "Y",
+      "HPHT": "Y",
+      "Hole Diameter (in)": "8.5",
+      "Formation Strength (g/cm3)": "1.73",
+      "Pressure Test Type": null
+    },
+    "Summaries": {
+      "Summary of activities": "Plastic visc. (mPa.s) 49 49 Yield point (Pa) 12 12 Filtration tests Pm filtrate () Filtrate Lthp () Filtrate Hthp () Cake thickn API () Cake thickn HPHT () Test Temp HPHT () Comment Pore Pressure Time Depth mMD Depth TVD Equ Mud Weight (g/cm3) Reading 00:00 2213 1.03 estimated",
+      "Summary of planned activities": "Plastic visc. (mPa.s) 49 49 Yield point (Pa) 12 12 Filtration tests Pm filtrate () Filtrate Lthp () Filtrate Hthp () Cake thickn API () Cake thickn HPHT () Test Temp HPHT () Comment Pore Pressure Time Depth mMD Depth TVD Equ Mud Weight (g/cm3) Reading 00:00 2213 1.03 estimated"
+    },
+    "Tables": {
+      "Operations Table": [
+        {
+          "Start time": "00:00",
+          "End time": "00:30",
+          "End Depth mMD": "2196",
+          "Main -- Sub Activity": "drilling -- cir culating con ditioning",
+          "State": "ok",
+          "Remark": "COMPLETED CIRCULATING HOLE CLEAN. FLUSHED CHOKE & KILL LINES."
+        },
+        {
+          "Start time": "00:30",
+          "End time": "03:00",
+          "End Depth mMD": "1110",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "FLOW CHECKED, PUMPED SLUG & POOH TO PU DRILLING BHA."
+        },
+        {
+          "Start time": "03:00",
+          "End time": "04:00",
+          "End Depth mMD": "1110",
+          "Main -- Sub Activity": "interruption -- maintain",
+          "State": "fail",
+          "Remark": "BURST HYDRAULIC HOSE ON UPPER RACKING ARM - REPAIRED SAME."
+        },
+        {
+          "Start time": "04:00",
+          "End time": "06:00",
+          "End Depth mMD": "0",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "CONTINUED TO POOH WITH MILLING ASSEMBLY."
+        },
+        {
+          "Start time": "06:00",
+          "End time": "06:30",
+          "End Depth mMD": "0",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "COMPLETED LD MILLING ASSEMBLY."
+        },
+        {
+          "Start time": "06:30",
+          "End time": "09:00",
+          "End Depth mMD": "173",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "MU DRILLING BHA; MOTOR TESTED OK."
+        },
+        {
+          "Start time": "09:00",
+          "End time": "10:00",
+          "End Depth mMD": "800",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "TIH WITH BHA TO 800 M."
+        },
+        {
+          "Start time": "10:00",
+          "End time": "10:30",
+          "End Depth mMD": "800",
+          "Main -- Sub Activity": "interruption -- maintain",
+          "State": "fail",
+          "Remark": "ATTEMPTED TO PERFORM WEEKLY BOP FUNCTION TEST USING YELLOW POD. NO FUNCTION OF EITHER ANNULAR POSSIBLE."
+        },
+        {
+          "Start time": "10:30",
+          "End time": "13:00",
+          "End Depth mMD": "2193",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "CONTINUED TO TIH TO 2193 M WHILE PULLING YELLOW POD."
+        },
+        {
+          "Start time": "13:00",
+          "End time": "17:00",
+          "End Depth mMD": "2193",
+          "Main -- Sub Activity": "interruption -- maintain",
+          "State": "fail",
+          "Remark": "FOUND CRIMPED PILOT LINE IN POD HOSE. CHANGED PILOT LINE FOR ANNULARS' REGULATOR. RERAN YELLOW POD & LATCHED-UP."
+        },
+        {
+          "Start time": "17:00",
+          "End time": "17:30",
+          "End Depth mMD": "2193",
+          "Main -- Sub Activity": "drilling -- bo p activities",
+          "State": "ok",
+          "Remark": "FUNCTION TESTED BOPS USING YELLOW POD - FROM RIG FLOOR PANEL."
+        },
+        {
+          "Start time": "17:30",
+          "End time": "18:30",
+          "End Depth mMD": "2213",
+          "Main -- Sub Activity": "interruption -- fish",
+          "State": "fail",
+          "Remark": "ORIENTED BIT/MOTOR & SLACKED-OFF THROUGH WINDOW.REAMED F/2208-2212M. STARTED DRILLING-SPP INCREASED 35BAR&TDS STALLED Ø16300NM.FREED STUCK STRING USING 32 MT O/PULL-TORQUE STILL TRAPPED IN STRING.WHILE PULLING PAST 2207M W/BIT,SPP INCREASED AGAIN.FREED BIT PAST 2207M USING 55 MT O/PUL L.THEN ABLE TO RELEASE TORQUE IN STRING ONCE ABOVE 2202M."
+        },
+        {
+          "Start time": "18:30",
+          "End time": "19:30",
+          "End Depth mMD": "2202",
+          "Main -- Sub Activity": "drilling -- dril l",
+          "State": "fail",
+          "Remark": "ATTEMPTED SEVERAL TIMES TO PASS THROUGH WINDOW - UNABLE TO GO BELOW 2202 M - TOP OF WINDOW IN 9 5/8\" CASING."
+        },
+        {
+          "Start time": "19:30",
+          "End time": "00:00",
+          "End Depth mMD": "0",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "fail",
+          "Remark": "FLOW CHECKED, PUMPED SLUG & POOH WITH DRILLING BHA. BIT WAS DAMAGED - 6 OUT OF 9 BLADES ON BIT WERE DAMAGED/BROKEN. NO OTHER DAMAGE TO BHA COMPONENTS NOTED."
+        }
+      ],
+      "Drilling Fluid Table": [],
+      "Equipment Failure Table": [],
+      "Other Tables": [
+        {
+          "Plastic visc. (mPa.s)": "Yield point (Pa)",
+          "49": "12"
+        },
+        {
+          "Plastic visc. (mPa.s)": "Filtration tests",
+          "49": null
+        },
+        {
+          "Plastic visc. (mPa.s)": "Pm filtrate ()",
+          "49": ""
+        },
+        {
+          "Plastic visc. (mPa.s)": "Filtrate Lthp ()",
+          "49": ""
+        },
+        {
+          "Plastic visc. (mPa.s)": "Filtrate Hthp ()",
+          "49": ""
+        },
+        {
+          "Plastic visc. (mPa.s)": "Cake thickn API ()",
+          "49": ""
+        },
+        {
+          "Plastic visc. (mPa.s)": "Cake thickn HPHT ()",
+          "49": ""
+        },
+        {
+          "Plastic visc. (mPa.s)": "Test Temp HPHT ()",
+          "49": ""
+        },
+        {
+          "Plastic visc. (mPa.s)": "Comment",
+          "49": ""
+        },
+        {
+          "Time": "00:00",
+          "Depth mMD": "2213",
+          "Depth TVD": "",
+          "Equ Mud Weight (g/cm3)": "1.03",
+          "Reading": "estimated"
+        }
+      ]
+    },
+    "filename": "15_9_19_A_1997_07_27.pdf"
+  },
+  {
+    "Metadata": {
+      "Wellbore ID": "15/9-19",
+      "Report number": "4",
+      "Period": "1997-07-27 00:00 - 1997-07-28 00:00",
+      "Status": "normal",
+      "Operator": null,
+      "Rig Name": null,
+      "Drilling Contractor": null,
+      "Spud Date": "1997-07-25 00:00",
+      "Water depth MSL (m)": "84",
+      "Elevation RKB-MSL (m)": "25",
+      "Current Depth mMD": "2187",
+      "Current Depth mTVD": null,
+      "Kick Off Depth mMD": "2178",
+      "Kick Off Depth mTVD": null,
+      "Last Casing Depth mMD": "4643",
+      "Plug Back Depth mMD": "2187",
+      "Tight well": "Y",
+      "HPHT": "Y",
+      "Hole Diameter (in)": "8.5",
+      "Formation Strength (g/cm3)": "1.73",
+      "Pressure Test Type": null
+    },
+    "Summaries": {
+      "Summary of activities": "Time Depth mMD Depth TVD Equ Mud Weight (g/cm3) Reading 00:00 2187 1.03 estimated",
+      "Summary of planned activities": "Time Depth mMD Depth TVD Equ Mud Weight (g/cm3) Reading 00:00 2187 1.03 estimated"
+    },
+    "Tables": {
+      "Operations Table": [
+        {
+          "Start time": "00:00",
+          "End time": "06:00",
+          "End Depth mMD": "2202",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "MU MILLING BHA & TIH TO WHIPSTOCK."
+        },
+        {
+          "Start time": "06:00",
+          "End time": "09:00",
+          "End Depth mMD": "2205",
+          "Main -- Sub Activity": "drilling -- drill",
+          "State": "fail",
+          "Remark": "MILLED FROM 2202-2205 M. DECREASE IN ROP - NOT MAKING ANY PROGRESS IN MILLING THROUGH WINDOW."
+        },
+        {
+          "Start time": "09:00",
+          "End time": "13:30",
+          "End Depth mMD": "0",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "fail",
+          "Remark": "FLOWCHECKED, PUMPED SLUG & POOH WITH MILLING BHA."
+        },
+        {
+          "Start time": "13:30",
+          "End time": "18:30",
+          "End Depth mMD": "2187",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "TIH TO 2187 M WITH 9 5/8\" BRIDGE PLUG ON DP."
+        },
+        {
+          "Start time": "18:30",
+          "End time": "19:30",
+          "End Depth mMD": "2187",
+          "Main -- Sub Activity": "drilling -- other",
+          "State": "ok",
+          "Remark": "SET BRIDGE PLUG AT 2187 M L.A.T. CONFIRMED SETTING BY SLACKING-OFF 10 MT DOWN ON PLUG."
+        },
+        {
+          "Start time": "19:30",
+          "End time": "20:30",
+          "End Depth mMD": "2187",
+          "Main -- Sub Activity": "drilling -- circulating conditioning",
+          "State": "ok",
+          "Remark": "PUMPED 10 M3 HI-VIS PILL & CIRCULATED OUT."
+        },
+        {
+          "Start time": "20:30",
+          "End time": "00:00",
+          "End Depth mMD": "0",
+          "Main -- Sub Activity": "drilling -- trip",
+          "State": "ok",
+          "Remark": "FLOWCHECKED, PUMPED SLUG & POOH WITH EZSV M.S.T."
+        }
+      ],
+      "Drilling Fluid Table": [],
+      "Equipment Failure Table": [],
+      "Other Tables": [
+        {
+          "Time": "00:00",
+          "Depth mMD": "2187",
+          "Depth TVD": "",
+          "Equ Mud Weight (g/cm3)": "1.03",
+          "Reading": "estimated"
+        }
+      ]
+    },
+    "filename": "15_9_19_A_1997_07_28.pdf"
+  }
+]

@@ -420,7 +420,8 @@ def match_nds_events(
         well_raw   = str(row['Well']).strip()
         event_text = str(row['Event']).strip()
 
-        # FIX 5: lowercase prefix for case-insensitive matching
+        # FIX 5
+        #: lowercase prefix for case-insensitive matching
         well_prefix = well_raw.replace('/', '_').replace('-', '_').lower()
 
         print(f"\n[{idx+1}/{len(df_nds)}] Well: {well_raw}")
