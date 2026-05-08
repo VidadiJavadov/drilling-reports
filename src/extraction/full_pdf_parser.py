@@ -10,9 +10,7 @@ from pathlib import Path
 import pdfplumber
 from tqdm import tqdm
 
-# ---------------------------------------------------------------------------
 # Logging
-# ---------------------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s  %(levelname)-8s  %(message)s",
@@ -20,10 +18,6 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-
-# ---------------------------------------------------------------------------
-# Text helpers
-# ---------------------------------------------------------------------------
 
 def fix_double_letter_bug(text: str) -> str:
     """Fix 'SSttaarrtt' OCR artefact where every character is doubled."""
@@ -54,10 +48,7 @@ def make_pattern(phrase: str) -> str:
     return r"\s*".join(list(phrase))
 
 
-# ---------------------------------------------------------------------------
 # Metadata patterns
-# ---------------------------------------------------------------------------
-
 _STOP = r"(?=\s*[A-Z][a-zA-Z0-9\s\(\)\/\-\+\.]*?:|$|\n)"
 
 # For text/name fields in the single-line multi-column layout, we stop when the
@@ -90,7 +81,7 @@ METADATA_PATTERNS = {
     "HPHT":                     r"(?i)HPHT\s*:\s*([YyNn])",
     "Hole Diameter (in)":       r"(?i)Hole\s+Dia[^\n:]*:\s*([\d\.]+)",
     "Formation Strength (g/cm3)": r"(?i)Formation\s+strength[^\n:]*:\s*([\d\.]+)",
-    "Pressure Test Type":       r"(?i)Pressure\s+Test\s+Type\s*:\s*(.*?)" + _STOP,
+    "Pressure Test Type": r"(?i)Pressure\s+Test\s+Type\s*:\s*(.*?)" + _STOP_LABEL
 }
 
 
@@ -110,26 +101,13 @@ def extract_metadata(full_text: str) -> dict:
     return metadata
 
 
-# ---------------------------------------------------------------------------
-# Summary sections
-# ---------------------------------------------------------------------------
-
 def extract_summaries(full_text: str) -> dict:
     """
-    FIX: pdfplumber collapses multi-column pages into a single long line,
-    so line-by-line extraction fails. Instead we use regex directly on the
-    single-line text with precise anchors.
-
-    Pattern:
-      "Summary of activities (24 Hours)"  → capture until next section header
-      "Summary of planned activities ..."  → capture until next section header
-
-    The STOP anchor is any known section keyword that marks the next block.
-    We also strip any trailing numeric/time garbage that may follow.
+    Extracts summary of acitivities and summary of planned activities from reports
     """
     # These words mark the end of a summary block
     _SUMMARY_STOP = (
-        r"(?=Summary\s+of\s+planned|"
+        r"(?=Summary\s+of\s+planned\s+activities|"
         r"Operations\b|"
         r"Drilling\s+Fluid\b|"
         r"Equipment\b|"
@@ -140,8 +118,8 @@ def extract_summaries(full_text: str) -> dict:
     )
 
     act_m = re.search(
-        r"Summary\s+of\s+activities[^\n]*?"  # header (not greedy)
-        r"\s+((?:[A-Z0-9\"\.\,\&\;\:\-\/\(\)\s]+?))"  # body: only ALL-CAPS sentences
+        r"Summary\s+of\s+activities[^\n]*?"
+        r"\s*(.*?)"
         + _SUMMARY_STOP,
         full_text,
         re.IGNORECASE | re.DOTALL,
@@ -149,7 +127,7 @@ def extract_summaries(full_text: str) -> dict:
 
     plan_m = re.search(
         r"Summary\s+of\s+planned\s+activities[^\n]*?"
-        r"\s+((?:[A-Z0-9\"\.\,\&\;\:\-\/\(\)\s]+?))"
+        r"\s*(.*?)"
         + _SUMMARY_STOP,
         full_text,
         re.IGNORECASE | re.DOTALL,
@@ -172,33 +150,81 @@ def extract_summaries(full_text: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
 # Table detection & extraction
-# ---------------------------------------------------------------------------
-
-TABLE_TYPE_KEYWORDS = {
-    # Order matters — checked top to bottom; first match wins.
-    # Gas Reading must come BEFORE Equipment Failure because both have "class".
-    "Gas Reading Table":       ["highest gas", "lowest gas", "depth to top", "c1 (ppm)"],
-    "Operations Table":        ["start time", "end time", "main", "activity", "state", "remark"],
-    "Drilling Fluid Table":    ["fluid", "density", "viscosity", "yield", "sample"],
-    # Equipment Failure keywords are now specific compound phrases — not single
-    # generic words like "class" that also appear in Gas Reading headers.
-    "Equipment Failure Table": ["equipment system", "equipment class", "downtime", "equipment failure"],
+HEADING_TO_TABLE_TYPE = {
+    "operations":        "Operations Table",
+    "drilling fluid":    "Drilling Fluid Table",
+    "equipment failure": "Equipment Failure Table",
+    "gas reading":       "Gas Reading Table",
+    "survey station":    "Survey Table",
+    "pore pressure":     "Pore Pressure Table",
+    "lithology":         "Lithology Table",
 }
 
 
-def normalise_header_str(headers: list) -> str:
+def _get_heading_above_table(page, table_bbox: tuple):
+    """
+    Return the cleaned text of the nearest heading printed above a table,
+    using pdfplumber word-level bounding boxes.
+
+    Strategy:
+      1. Extract all words from the page with their (x0, top, x1, bottom).
+      2. Find words whose bottom edge is above the table top edge.
+      3. Among those, take the cluster whose bottom is closest to the table top
+         (within 60px — any further and it belongs to a different section).
+      4. Join those words into a single string and return it.
+    """
+    table_top = table_bbox[1]
+
+    try:
+        words = page.extract_words()
+    except Exception:
+        return None
+
+    if not words:
+        return None
+
+    above = [w for w in words if w["bottom"] <= table_top]
+    if not above:
+        return None
+
+    closest_bottom = max(w["bottom"] for w in above)
+
+    # If the heading is more than 60px above the table it belongs to another section
+    if table_top - closest_bottom > 60:
+        return None
+
+    heading_words = [w for w in above if abs(w["bottom"] - closest_bottom) <= 4]
+    heading_words.sort(key=lambda w: w["x0"])
+    raw = " ".join(fix_double_letter_bug(w["text"]) for w in heading_words)
+    return re.sub(r"\s+", " ", raw).strip()
+
+
+def classify_table_by_heading(heading):
+    """Map a section heading string to a known table type."""
+    if not heading:
+        return "Other Table"
+    h = heading.lower()
+    for pattern, table_type in HEADING_TO_TABLE_TYPE.items():
+        if pattern in h:
+            return table_type
+    return "Other Table"
+
+
+# Fallback keyword matching, used omly when heading detection returns nothing.
+_FALLBACK_KEYWORDS = {
+    "Gas Reading Table":       ["highest gas", "c1 (ppm)", "c2 (ppm)"],
+    "Operations Table":        ["start time", "end time", "main", "activity"],
+    "Drilling Fluid Table":    ["fluid type", "fluid density", "plastic visc"],
+    "Equipment Failure Table": ["equipment system", "equipment class", "downtime", "Sub Equip -- Syst Class"," Equipment Repaired"],
+}
+
+
+def _classify_by_columns(headers: list) -> str:
     raw = " ".join(str(h) for h in headers if h)
-    raw = fix_double_letter_bug(raw)          # fix OCR doubles first
-    raw = raw.lower().replace("\n", " ").replace("-", "")
-    return raw
-
-
-def identify_table_type(headers: list) -> str:
-    norm = normalise_header_str(headers)
-    for table_type, keywords in TABLE_TYPE_KEYWORDS.items():
-        if any(kw in norm for kw in keywords):
+    raw = fix_double_letter_bug(raw).lower().replace("\n", " ")
+    for table_type, keywords in _FALLBACK_KEYWORDS.items():
+        if any(kw in raw for kw in keywords):
             return table_type
     return "Other Table"
 
@@ -211,11 +237,6 @@ def is_header_row(row: list, headers: list) -> bool:
     matches = sum(1 for r in cleaned_row if r in cleaned_hdr)
     return matches / max(len(cleaned_hdr), 1) > 0.5
 
-
-# ---------------------------------------------------------------------------
-# FIX 1: Drilling Fluid table is TRANSPOSED (rows = properties, cols = samples)
-# Detect this format and pivot it properly into one dict per sample column.
-# ---------------------------------------------------------------------------
 
 def is_transposed_fluid_table(table: list) -> bool:
     """
@@ -257,7 +278,6 @@ def extract_transposed_fluid_table(table: list) -> list[dict]:
         for col_idx in range(num_samples):
             val_idx = col_idx + 1
             val = clean_text(row[val_idx]) if val_idx < len(row) else None
-            # Skip empty / placeholder values
             if val in (None, "", "-999.99", "-"):
                 val = None
             samples[col_idx][prop_name] = val
@@ -266,11 +286,7 @@ def extract_transposed_fluid_table(table: list) -> list[dict]:
     return [s for s in samples if any(v for v in s.values())]
 
 
-# ---------------------------------------------------------------------------
-# FIX 2: Smarter junk detection — do NOT kill Drilling Fluid tables.
-# Only reject tables that are clearly metadata forms (key:value with colons),
-# not the ones that contain known table types.
-# ---------------------------------------------------------------------------
+#Junk table detection
 
 def is_junk_table(table_data: list) -> bool:
     """Return True only for tables that are definitely metadata forms, not data tables."""
@@ -311,32 +327,60 @@ def is_junk_table(table_data: list) -> bool:
 
 
 def extract_tables_from_page(page) -> dict:
-    result: dict[str, list] = {}
-    tables = page.extract_tables()
-    if not tables:
-        return result
+    """
+    Extract and classify all tables on a page.
 
-    for table in tables:
+    Classification order (first match wins):
+      1. Heading-based: find the nearest printed section heading above the table
+         in the page's word-coordinate space.  This is the primary signal and
+         works regardless of how column names vary across PDF vendors.
+      2. Column-keyword fallback: if no heading is found within range, try matching
+         known column name patterns.  This handles the rare case where a table
+         sits at the very top of a page with no heading visible on that page.
+    """
+    result: dict[str, list] = {}
+
+    # pdfplumber's find_tables() gives us table objects with .bbox (x0,top,x1,bottom)
+    # as well as the raw cell data.  We need both.
+    try:
+        table_objects = page.find_tables()
+    except Exception:
+        table_objects = []
+
+    raw_tables = page.extract_tables() or []
+
+    # Zip objects and raw data together (same order guaranteed by pdfplumber)
+    pairs = list(zip(table_objects, raw_tables)) if table_objects else             [(None, t) for t in raw_tables]
+
+    for tobj, table in pairs:
         # Remove fully-empty rows
         cleaned = [row for row in table if row and any(cell for cell in row if cell)]
         if not cleaned:
             continue
 
-        # FIX 2: use the improved junk filter
         if is_junk_table(cleaned):
             continue
 
-        # FIX 1: handle transposed Drilling Fluid table specially
+        # Drilling Fluid is transposed — handle before heading classification
         if is_transposed_fluid_table(cleaned):
             rows_out = extract_transposed_fluid_table(cleaned)
             if rows_out:
                 result.setdefault("Drilling Fluid Table", []).extend(rows_out)
             continue
 
-        # Normal table: first row = headers
-        headers = [clean_text(h) for h in cleaned[0]]
-        table_type = identify_table_type(headers)
+        # --- PRIMARY: classify by section heading above the table ---
+        table_type = "Other Table"
+        if tobj is not None:
+            heading = _get_heading_above_table(page, tobj.bbox)
+            table_type = classify_table_by_heading(heading)
 
+        # --- FALLBACK: classify by column name keywords ---
+        if table_type == "Other Table":
+            headers_raw = [clean_text(h) for h in cleaned[0]]
+            table_type = _classify_by_columns(headers_raw)
+
+        # Parse rows
+        headers = [clean_text(h) for h in cleaned[0]]
         rows_out = []
         for row in cleaned[1:]:
             if is_header_row(row, headers):
@@ -442,15 +486,16 @@ def _create_sqlite_schema(conn: sqlite3.Connection):
         );
 
         CREATE TABLE IF NOT EXISTS equipment_failures (
-            id               INTEGER PRIMARY KEY AUTOINCREMENT,
-            document_id      TEXT REFERENCES documents(id),
-            start_time       TEXT,
-            depth            TEXT,
-            equipment_system TEXT,
-            equipment_class  TEXT,
-            downtime_min     TEXT,
-            remark           TEXT,
-            raw_json         TEXT
+            id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+            document_id        TEXT REFERENCES documents(id),
+            start_time         TEXT,
+            depth              TEXT,
+            equipment_system   TEXT,
+            equipment_class    TEXT,
+            downtime_min       TEXT,
+            equipment_repaired TEXT,
+            remark             TEXT,
+            raw_json           TEXT
         );
 
         CREATE TABLE IF NOT EXISTS other_tables (
@@ -571,18 +616,62 @@ def _insert_document(conn: sqlite3.Connection, doc_id: str,
         ))
 
     for row in tables.get("Equipment Failure Table", []):
+        # ----------------------------------------------------------------
+        # Sütun adları PDF-dən PDF-ə dəyişir. Bütün variasiyaları yoxlayırıq.
+        # "Sub Equip - Syst Class" kimi birləşmiş sütunları da ayırırıq.
+        # ----------------------------------------------------------------
+
+        # Start time
+        start_time = (row.get("Start time") or row.get("Start Time")
+                      or row.get("Start"))
+
+        # Depth — mMD priority
+        depth = (row.get("Depth mMD") or row.get("Depth mmd")
+                 or row.get("Depth") or row.get("Depths"))
+
+        # Equipment system + class:
+        # Variasiya 1: ayrı sütunlar — "Equipment system" / "Equipment class"
+        # Variasiya 2: birləşmiş sütun — "Sub Equip - Syst Class"
+        #   format: "pipe handling eq u syst -- other"  (system -- class)
+        equip_system = (row.get("Equipment system") or row.get("Equipment System")
+                        or row.get("Equipment System Class"))
+        equip_class  = (row.get("Equipment class") or row.get("Equipment Class"))
+
+        if not equip_system and not equip_class:
+            combined = (row.get("Sub Equip - Syst Class")
+                        or row.get("Sub Equip Syst Class")
+                        or row.get("Equip - Syst Class")
+                        or row.get("Equipment Syst Class"))
+            if combined:
+                parts = re.split(r"\s+--\s+", combined, maxsplit=1)
+                equip_system = parts[0].strip() if parts else combined
+                equip_class  = parts[1].strip() if len(parts) > 1 else None
+
+        # Downtime
+        downtime = (row.get("Operation Downtime (min)") or row.get("Downtime (min)")
+                    or row.get("Downtime") or row.get("NPT (min)")
+                    or row.get("NPT") or row.get("Non-Productive Time (min)"))
+
+        # Equipment Repaired (yeni sütun — schema-ya əlavə edilib)
+        equip_repaired = (row.get("Equipment Repaired") or row.get("Equip Repaired")
+                          or row.get("Repaired"))
+
+        # Remark
+        remark = row.get("Remark") or row.get("Remarks") or row.get("Comment")
+
         cur.execute("""
             INSERT INTO equipment_failures
             (document_id,start_time,depth,equipment_system,
-             equipment_class,downtime_min,remark,raw_json)
-            VALUES (?,?,?,?,?,?,?,?)""", (
+             equipment_class,downtime_min,equipment_repaired,remark,raw_json)
+            VALUES (?,?,?,?,?,?,?,?,?)""", (
             doc_id,
-            row.get("Start time") or row.get("Start Time"),
-            row.get("Depth")      or row.get("Depths"),
-            row.get("Equipment system") or row.get("Equipment System"),
-            row.get("Equipment class")  or row.get("Equipment Class"),
-            row.get("Downtime")   or row.get("Downtime (min)"),
-            row.get("Remark")     or row.get("Remarks"),
+            start_time,
+            depth,
+            equip_system,
+            equip_class,
+            downtime,
+            equip_repaired,
+            remark,
             json.dumps(row, ensure_ascii=False),
         ))
 

@@ -31,7 +31,6 @@ Fixes vs. the hand-edited SQLite version
 * FIX 5 — well_prefix matching is now case-insensitive and also strips leading/
   trailing whitespace that sometimes appears in wellbore_id values from the DB.
 """
-
 import pandas as pd
 import numpy as np
 import os

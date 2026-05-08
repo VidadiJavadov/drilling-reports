@@ -2,11 +2,11 @@ import json
 import os
 
 def check_all_requirements(json_path):
-    print(f"🔍 Task 1 Tələblərinin Analizi Başladı: {json_path}\n")
+    print(f"🔍 Analysis of Task 1 Requirements Started: {json_path}\n")
     print("=" * 60)
     
     if not os.path.exists(json_path):
-        print(f"❌ Xəta: {json_path} faylı tapılmadı!")
+        print(f" Error: {json_path} file not found!")
         return
 
     with open(json_path, 'r', encoding='utf-8') as f:
@@ -14,10 +14,10 @@ def check_all_requirements(json_path):
 
     total_docs = len(data)
     if total_docs == 0:
-        print("Baza boşdur.")
+        print("Database is empty.")
         return
 
-    # Task 1-də tələb olunan bütün sahələr
+    # All required fields in Task 1
     requirements = {
         "Metadata": [
             "Wellbore ID", "Report number", "Period", "Status", 
@@ -39,14 +39,14 @@ def check_all_requirements(json_path):
         ]
     }
 
-    # Statistikaları toplamaq üçün lüğət
+    # Dictionary to store statistics
     stats = {
         "Metadata": {field: 0 for field in requirements["Metadata"]},
         "Summaries": {field: 0 for field in requirements["Summaries"]},
         "Tables": {field: 0 for field in requirements["Tables"]}
     }
 
-    # JSON-u oxuyub sayırıq
+    # Read JSON and calculate statistics
     for doc in data:
         # Metadata
         meta = doc.get("Metadata", {})
@@ -62,21 +62,21 @@ def check_all_requirements(json_path):
             if val is not None and str(val).strip() not in ["", "null", "None"]:
                 stats["Summaries"][field] += 1
                 
-        # Tables (Cədvəllərin içində ən az 1 sətir varsa, uğurlu sayırıq)
+        # Tables (if at least one row exists, count as valid)
         tabs = doc.get("Tables", {})
         for field in requirements["Tables"]:
             val = tabs.get(field)
             if isinstance(val, list) and len(val) > 0:
                 stats["Tables"][field] += 1
 
-    # Nəticələrin Çap Edilməsi
+    # Print results
     def print_section(title, section_key):
-        print(f"\n📌 {title.upper()}")
+        print(f"\n{title.upper()}")
         print("-" * 60)
         for field, count in stats[section_key].items():
             rate = (count / total_docs) * 100
             
-            # Status rəngləndiricisi (Terminalda vizual üçün)
+            # Visual status indicator (for terminal output)
             if rate >= 90:
                 icon = "🟢"
             elif rate >= 50:
@@ -86,18 +86,18 @@ def check_all_requirements(json_path):
             else:
                 icon = "🔴"
                 
-            print(f"{icon} {field:<30}: {count}/{total_docs} doludur ({rate:.1f}%)")
+            print(f"{icon} {field:<30}: {count}/{total_docs} filled ({rate:.1f}%)")
 
-    print(f"Ümumi analiz edilən sənəd sayı: {total_docs}")
-    print_section("1. Metadata (Sənəd Başlıqları)", "Metadata")
-    print_section("2. Summary (Xülasə Mətnləri)", "Summaries")
-    print_section("3. Tables (Əsas Cədvəllər)", "Tables")
+    print(f"Total number of documents analyzed: {total_docs}")
+    print_section("1. Metadata (Document Fields)", "Metadata")
+    print_section("2. Summary Texts", "Summaries")
+    print_section("3. Tables", "Tables")
     
     print("\n" + "=" * 60)
-    print("💡 QEYD: Bəzi cədvəllərin (məs. Equipment Failure) və sahələrin az olması")
-    print("normaldır, çünki bu hadisələr hər hesabatda baş vermir.")
+    print("💡 NOTE: Some tables (e.g., Equipment Failure) and fields may have low coverage")
+    print("which is normal because these events do not occur in every report.")
 
 if __name__ == "__main__":
-    # JSON faylının yolunu bura qeyd et:
-    json_file_path = "D:\drilling-report-nlp\data\processed\document_database.json" 
+    # Specify JSON file path here:
+    json_file_path = r"D:\drilling-report-nlp\data\processed\document_database.json"
     check_all_requirements(json_file_path)
